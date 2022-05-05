@@ -4,6 +4,8 @@ import 'package:frontend/widgets/components/WalkList.dart';
 import '../../classes/Walk.dart';
 import '../components/Singleton.dart';
 
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
+
 class HomeScreen extends StatefulWidget
 {
   const HomeScreen({Key? key}) : super(key: key);
@@ -40,7 +42,7 @@ class HomeScreenState extends State<HomeScreen>
     _single.setAppBar(_makeAppBar());
     return Scaffold(
       appBar: _single.getAppBar(),
-      floatingActionButton: _getActionButton(),
+      floatingActionButton: _makeSpeedDial(),
       body: WalkList(_walks),
     );
   }
@@ -67,12 +69,29 @@ class HomeScreenState extends State<HomeScreen>
     );
   }
 
-  FloatingActionButton _getActionButton()
+  SpeedDial _makeSpeedDial()
   {
-    return FloatingActionButton(
-        onPressed:(){},
-        backgroundColor: Colors.green,
-      child: Icon(Icons.add),
+    return SpeedDial(
+      backgroundColor: Colors.green,
+      visible: true,
+      icon: Icons.more,
+      animatedIcon: AnimatedIcons.menu_close,
+      curve: Curves.bounceInOut,
+      useRotationAnimation: true,
+      children: [
+        SpeedDialChild(
+          backgroundColor: Colors.green,
+          onTap:(){},
+          label: "Add Walk",
+          child: Icon(Icons.add,color: Colors.white,),
+        ),
+        SpeedDialChild(
+            backgroundColor: Colors.green,
+            onTap:(){},
+            label: "Map",
+            child: Icon(Icons.map,color: Colors.white,)
+        )
+      ],
     );
   }
 
