@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/components/WalkList.dart';
+import 'package:frontend/widgets/components/WalkMap.dart';
 
 import '../../classes/Walk.dart';
-import '../components/Singleton.dart';
+import '../../classes/Singleton.dart';
 
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 
@@ -35,15 +36,25 @@ class HomeScreenState extends State<HomeScreen>
     Walk("Tortona",DateTime(1970),"1223"),
     Walk("Tortona",DateTime(1970),"1223"),];
 
+  late Widget _screen;
+  bool _firstRender=false;
+
   @override
   Widget build(BuildContext context)
   {
     Singleton _single=Singleton();
-    _single.setAppBar(_makeAppBar());
+    if(_firstRender)
+    {
+      _single.setAppBar(_makeAppBar());
+      _single.setHomes([WalkList(_walks),WalkMap(_walks)]);
+      _screen=WalkList(_walks);//_single.changeHome();
+      _firstRender=false;
+    }
+
     return Scaffold(
       appBar: _single.getAppBar(),
       floatingActionButton: _makeSpeedDial(),
-      body: WalkList(_walks),
+      body: _screen,
     );
   }
 
@@ -71,6 +82,19 @@ class HomeScreenState extends State<HomeScreen>
 
   SpeedDial _makeSpeedDial()
   {
+    IconData icon;
+    String label;
+    if(_screen is WalkList)
+    {
+      icon=Icons.map;
+      label="Show map";
+    }
+    else
+    {
+      icon=Icons.list;
+      label="Show list";
+    }
+
     return SpeedDial(
       backgroundColor: Colors.green,
       visible: true,
@@ -88,8 +112,8 @@ class HomeScreenState extends State<HomeScreen>
         SpeedDialChild(
             backgroundColor: Colors.green,
             onTap:(){},
-            label: "Map",
-            child: Icon(Icons.map,color: Colors.white,)
+            label: label,
+            child: Icon(icon,color: Colors.white,)
         )
       ],
     );

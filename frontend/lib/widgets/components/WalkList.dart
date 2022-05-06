@@ -56,7 +56,7 @@ class WalkList extends StatelessWidget
         },
         style: TextButton.styleFrom(
           shadowColor: Colors.green,
-          p
+          onSurface: Colors.green,
         ),
       ),
     );

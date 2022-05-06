@@ -39,10 +39,18 @@
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+          AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+        }
+
     function loadMainDartJs() {
       if (scriptLoaded) {
         return;
       }
+
+
+
       scriptLoaded = true;
       var scriptTag = document.createElement('script');
       scriptTag.src = 'main.dart.js';
