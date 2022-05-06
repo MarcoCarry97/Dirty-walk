@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/components/WalkList.dart';
 import 'package:frontend/widgets/components/WalkMap.dart';
@@ -36,27 +38,43 @@ class HomeScreenState extends State<HomeScreen>
     Walk("Tortona",DateTime(1970),"1223"),
     Walk("Tortona",DateTime(1970),"1223"),];
 
-  late Widget _screen;
-  bool _firstRender=false;
+  late var _screen;
+  late var _walkView;
+  bool _isLoading=true;
 
   @override
   Widget build(BuildContext context)
   {
     Singleton _single=Singleton();
-    if(_firstRender)
+    _single.setAppBar(_makeAppBar());
+    _getWalkList().then((value)
     {
-      _single.setAppBar(_makeAppBar());
-      //_single.setHomes([WalkList(_walks),WalkMap(_walks)]);
-      _screen=WalkList(_walks);//_single.changeHome();
-      _firstRender=false;
-    }
-    else _screen=WalkList(_walks);
-    print("ok");
+      Timer(Duration(seconds: 5),()async//only to test the progressbar
+      {
+        setState(() {
+          _walkView=value;
+          _isLoading=false;
+        });
+      });
+    });
+    if(_isLoading) _screen=Center(
+        child:
+          CircularProgressIndicator(
+            color: Colors.green,
+          )
+        );
+    else _screen=_walkView;
+
     return Scaffold(
       appBar: _single.getAppBar(),
       floatingActionButton: _makeSpeedDial(),
       body: _screen,
     );
+  }
+
+  Future<WalkList> _getWalkList() async
+  {
+    return await WalkList(_walks);
   }
 
   AppBar _makeAppBar()
@@ -92,7 +110,8 @@ class HomeScreenState extends State<HomeScreen>
       label="Show map";
       onTap=(){
         setState(() {
-          _screen=WalkMap(_walks);
+          //_screen=WalkMap(_walks);
+          print("map");
         });
       };
     }
@@ -102,7 +121,7 @@ class HomeScreenState extends State<HomeScreen>
       label="Show list";
       onTap=(){
         setState(() {
-          _screen=WalkMap(_walks);
+          _screen=WalkList(_walks);
         });
       };
     }
