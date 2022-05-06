@@ -46,11 +46,12 @@ class HomeScreenState extends State<HomeScreen>
     if(_firstRender)
     {
       _single.setAppBar(_makeAppBar());
-      _single.setHomes([WalkList(_walks),WalkMap(_walks)]);
+      //_single.setHomes([WalkList(_walks),WalkMap(_walks)]);
       _screen=WalkList(_walks);//_single.changeHome();
       _firstRender=false;
     }
-
+    else _screen=WalkList(_walks);
+    print("ok");
     return Scaffold(
       appBar: _single.getAppBar(),
       floatingActionButton: _makeSpeedDial(),
@@ -84,15 +85,26 @@ class HomeScreenState extends State<HomeScreen>
   {
     IconData icon;
     String label;
+    var onTap=(){};
     if(_screen is WalkList)
     {
       icon=Icons.map;
       label="Show map";
+      onTap=(){
+        setState(() {
+          _screen=WalkMap(_walks);
+        });
+      };
     }
     else
     {
       icon=Icons.list;
       label="Show list";
+      onTap=(){
+        setState(() {
+          _screen=WalkMap(_walks);
+        });
+      };
     }
 
     return SpeedDial(
@@ -111,7 +123,7 @@ class HomeScreenState extends State<HomeScreen>
         ),
         SpeedDialChild(
             backgroundColor: Colors.green,
-            onTap:(){},
+            onTap:onTap,
             label: label,
             child: Icon(icon,color: Colors.white,)
         )
